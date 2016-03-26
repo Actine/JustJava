@@ -1,47 +1,48 @@
 package com.example.actine.justjava;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
-    int numberOfCups = 1;
+    private Order order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        order = new Order();
+
+        String[] types = getResources().getStringArray(R.array.types);
+
+        ((TextView) findViewById(R.id.result_text)).setText(types[1]);
     }
 
     public void plusOne(View view) {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-
-        numberOfCups = numberOfCups + 1;
-        display(numberOfCups);
-    }
-
-    private int getPrice(int numberOfCups) {
-        return numberOfCups * 5;
+        order.increaseCups();
+        updateOrderInfo();
     }
 
     public void minusOne(View view) {
-        numberOfCups = numberOfCups - 1;
-        display(numberOfCups);
+        order.decreaseCups();
+        updateOrderInfo();
     }
 
-    private void display(int number) {
+    public void order(View v) {
+        String text = order.toString();
+
+        TextView tv = (TextView) findViewById(R.id.result_text);
+        tv.setText(text);
+    }
+
+    private void updateOrderInfo() {
+        int number = order.getNumberOfCups();
         ((TextView) findViewById(R.id.numberOfCups)).setText("Number: " + number);
         TextView price = (TextView) findViewById(R.id.price);
-        price.setText("$" + getPrice(number) + ".00");
+        price.setText("$" + order.getPrice() + ".00");
 
         if (number < 1) {
             price.setTextColor(Color.RED);
